@@ -1,0 +1,16 @@
+{
+  "name": "wat-phra-kaew-3d",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Detailed procedural Wat Phra Kaew architectural study and interactive Three.js viewer",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/serve.mjs --dist",
+    "test": "node --test test/*.test.mjs",
+    "export": "node scripts/export-model.mjs"
+  },
+  "dependencies": { "three": "0.187.0" },
+  "engines": { "node": ">=20" }
+}

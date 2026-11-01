@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#163d35" />
+  <meta name="description" content="สำรวจโมเดลวัดพระแก้วสามมิติ รายละเอียดหลังคา เจดีย์ โมเสก และยักษ์ทวารบาล พร้อมส่งออก GLB" />
+  <title>วัดพระแก้ว — An architectural study in 3D</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%23163d35'/%3E%3Cpath d='M8 36h32L24 9zM14 28h20M18 21h12M24 5v34' fill='none' stroke='%23e6c782' stroke-width='2'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./src/style.css" />
+  <script type="importmap">{"imports":{"three":"./vendor/build/three.module.js","three/addons/":"./vendor/examples/jsm/"}}</script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="กลับสู่ภาพรวม">
+      <svg viewBox="0 0 46 48" aria-hidden="true"><path d="M5 40h36L23 10zM10 32h26M15 24h16M23 3v39M5 40v4h36v-4"/></svg>
+      <span>WAT PHRA KAEW<small>AN ARCHITECTURAL STUDY</small></span>
+    </a>
+    <div class="top-note"><span class="live-dot"></span> INTERACTIVE 3D EXPLORER</div>
+    <button id="export" class="export-button" title="ดาวน์โหลดโมเดลเป็น GLB">ส่งออกโมเดล <span>↗</span></button>
+  </header>
+  <aside class="sidebar">
+    <div class="intro"><span class="eyebrow">BANGKOK, THAILAND · 3D_1</span><h1>วัดพระแก้ว</h1><p>วัดพระศรีรัตนศาสดาราม</p><div class="rule"></div><p class="intro-description">สำรวจความประณีตของสถาปัตยกรรมไทย<br>ผ่านโมเดลสามมิติที่สร้างจากรายละเอียด</p></div>
+    <div class="nav-heading"><span>จุดที่น่าสนใจ</span><span>EXPLORE / 08</span></div>
+    <nav id="landmarks" aria-label="เลือกอาคาร"></nav>
+    <div class="side-footer"><span class="seal">๙</span><p>สร้างรูปทรงและลวดลายด้วยโค้ด<small>ภาพศึกษาอ้างอิง · ไม่ใช่แบบสำรวจมาตราส่วน</small></p></div>
+  </aside>
+  <main class="stage" id="stage">
+    <div id="viewport" aria-label="โมเดลวัดพระแก้วสามมิติ ใช้เมาส์ลากเพื่อหมุน ล้อเมาส์เพื่อซูม" tabindex="0"></div>
+    <div class="view-heading"><span class="eyebrow" id="view-subtitle">วัดพระศรีรัตนศาสดาราม</span><h2 id="view-title">ภาพรวมพระอาราม</h2></div>
+    <div class="compass" aria-hidden="true"><span>N</span><svg viewBox="0 0 48 48"><path d="M24 5L31 33 24 28 17 33Z"/><circle cx="24" cy="24" r="21"/></svg></div>
+    <div id="labels" class="labels"></div>
+    <div id="loading" class="loading"><div class="loader-symbol">◇</div><h2>กำลังสร้างพระอาราม</h2><p>จัดเรียงกระเบื้อง โมเสก และลวดลายประดับ…</p></div>
+    <section class="info-card" id="info-card"><span class="eyebrow" id="info-en">THE TEMPLE GROUNDS</span><p id="info-description"></p></section>
+    <div class="view-tools" aria-label="เครื่องมือมุมมอง">
+      <button id="reset" title="กลับภาพรวม (R)" aria-label="กลับภาพรวม">⌂</button>
+      <button id="top" title="มุมมองจากด้านบน" aria-label="มุมมองจากด้านบน">▦</button>
+      <button id="zoom-in" title="ซูมเข้า" aria-label="ซูมเข้า">+</button>
+      <button id="zoom-out" title="ซูมออก" aria-label="ซูมออก">−</button>
+      <button id="screenshot" title="บันทึกภาพ PNG" aria-label="บันทึกภาพ PNG">▣</button>
+      <button id="fullscreen" title="เต็มหน้าจอ" aria-label="เต็มหน้าจอ">⛶</button>
+    </div>
+    <div class="bottom-bar">
+      <div class="toggles">
+        <button id="rotate" aria-pressed="false"><span>↻</span> หมุนอัตโนมัติ</button>
+        <button id="roofs" aria-pressed="true"><span>⌁</span> หลังคา</button>
+        <button id="labels-toggle" aria-pressed="false"><span>⊙</span> ป้ายชื่อ</button>
+        <button id="settings-toggle" aria-expanded="false" aria-controls="settings"><span>☷</span> การแสดงผล</button>
+      </div>
+      <div class="mouse-hint">ลากเพื่อหมุน <i>·</i> เลื่อนเพื่อซูม <i>·</i> คลิกขวาเพื่อเลื่อน</div>
+    </div>
+    <section class="settings" id="settings" hidden aria-label="การแสดงผล">
+      <div class="settings-title">การแสดงผล <button id="close-settings" aria-label="ปิดการตั้งค่า">×</button></div>
+      <label for="light">ช่วงแสง <span id="light-value">กลางวัน</span></label>
+      <input id="light" type="range" min="0" max="100" value="35" />
+      <label for="quality">รายละเอียดโมเดล</label>
+      <select id="quality"><option value="high">สูง — กระเบื้องและโมเสกละเอียด</option><option value="balanced">สมดุล — สำหรับเครื่องที่ช้ากว่า</option></select>
+      <label class="check"><input type="checkbox" id="walls" checked /> กำแพงและพระระเบียง</label>
+      <label class="check"><input type="checkbox" id="wireframe" /> โครงเส้นสามเหลี่ยม</label>
+      <p class="model-stats" id="model-stats"></p>
+    </section>
+    <div class="scene-caption">PROCEDURAL HERITAGE COLLECTION <span>01 / WAT PHRA KAEW</span></div>
+  </main>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <noscript><p class="noscript">กรุณาเปิด JavaScript เพื่อแสดงโมเดลสามมิติ</p></noscript>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+import { mkdir, writeFile } from 'node:fs/promises';
+import { buildTemple } from '../src/model/temple.js';
+import { exportGLB } from '../src/export.js';
+import { installFileReader } from './node-polyfills.mjs';
+installFileReader();
+const quality=process.argv.includes('--balanced')?'balanced':'high';
+console.log(`Building ${quality} detail model…`);
+const {root,stats}=buildTemple({quality});
+const glb=await exportGLB(root);
+await mkdir('exports',{recursive:true});
+await writeFile('exports/wat-phra-kaew.glb',Buffer.from(glb));
+await writeFile('exports/model-stats.json',JSON.stringify(stats,null,2)+'\n');
+console.log(`exports/wat-phra-kaew.glb — ${(glb.byteLength/1048576).toFixed(2)} MB`);
+console.log(`${stats.parts.toLocaleString()} parts / ${stats.triangles.toLocaleString()} triangles / ${stats.drawCalls} batches`);
